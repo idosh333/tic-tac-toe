@@ -28,13 +28,11 @@
 A minimax algorithm is a recursive program written to find the best gameplay that minimizes any tendency
 to lose a game while maximizing any opportunity to win the game.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
 - Python
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 
@@ -51,14 +49,13 @@ To get a local copy up and running follow these simple example steps.
 
 ### Use
 
-1. Start the game using cmd
+1. Start the game using cmd or click on the game.bat file.
    ```sh
-   cd <root>
+   cd <gameFolder>
    py main.py
    ```
 2. Enjoy playing :)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 
