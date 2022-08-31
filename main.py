@@ -10,7 +10,17 @@ def gamePick():
     for i in range(2):
         print(f"{i + 1}) {options[i]}")
 
-    gamePick = int(input('Please pick your game type: ')) - 1
+    while True:
+        # Validating the input
+        gamePick = str(input('Please pick your game type: '))
+        if len(gamePick) > 1:
+            print('❌: Wrong input for gamePick, try again')
+        elif int(gamePick) > 2 or int(gamePick) < 1:
+            print('❌: Wrong input for gamePick, try again')
+        else:
+            break
+
+    gamePick = int(gamePick) - 1
     if gamePick == 0:
         localPlay()
     elif gamePick == 1:
@@ -34,13 +44,21 @@ def switchPlayer():
 
 # Reset the board, get the players names and flip a coin to see who's playing first
 def reset(isFirstTime=False):
-    global board, player, firstPlayerName, secPlayerName
+    global board, player, firstPlayerName, secPlayerName, score
     if isFirstTime:
         firstPlayerName = str(input('Please enter player1 name: '))
 
         # gamePick 0 = 2 players local play => need a second players name
         if gamePick == 0:
             secPlayerName = str(input('Please enter player2 name: '))
+            score = {
+                firstPlayerName: 0,
+                secPlayerName: 0
+            }
+        else:
+            score = {
+                firstPlayerName: 0
+            }
 
         player = {
             'name': firstPlayerName,
@@ -50,9 +68,15 @@ def reset(isFirstTime=False):
              ['_', '_', '_'],
              ['_', '_', '_']]
 
-    coinFlipPick = int(input('Please enter a coin flip pick(0/1): '))
-    if coinFlipPick != random.randint(0, 1):
+    coinFlipPick = input('Please enter a coin flip pick(0/1): ')
+    if coinFlipPick != str(random.randint(0, 1)):
         switchPlayer()
+
+    if not isFirstTime:
+        if gamePick == 0:
+            localPlay(isFirstTime)
+        elif gamePick == 1:
+            vsComp(isFirstTime)
 
 
 def printBoard():
@@ -103,21 +127,32 @@ def getWinner():
     return '_'
 
 
-def isValidMove(move):
-    [x, y] = move
+def isValidFormatInput():
+    while True:
+        move = str(
+            input('Please enter the indexes for your move(x,y): '))
+        try:
+            [x, y] = [int(x) for x in move.split(',')]
+            return [x, y]
+        except Exception:
+            print('❌: Wrong format, try again using the correct format: x,y')
 
-    # Check if one of the indexes is out of range
-    # or longer than the accepted format
-    if (
-        len(move) > 3 or
-        x > 2 or x < 0 or
-            y > 2 or y < 0
-    ):
-        return False
-    elif board[x][y] != '_':
-        return False
-    else:
-        return True
+
+def isValidMove():
+    while True:
+        [x, y] = isValidFormatInput()
+
+        # Check if one of the indexes is out of range
+        # or longer than the accepted format
+        if (
+            x > 2 or x < 0 or
+            y > 2 or y < 0 or
+            board[x][y] != '_'
+        ):
+            print('❌: Not a valid move, enter the indexes again please: ')
+            # return False
+        else:
+            return [x, y]
 
 
 '''
@@ -214,27 +249,46 @@ def printScores():
 
 def updateScore(data):
     if data == 'draw':
-        score[player['name']] += 1
+        if not player['name'] == 'Computer':
+            score[player['name']] += 1
 
         # Check if theres only one player(happens when playing vs computer)
         if len(score.keys()) > 1:
             switchPlayer()
-            score[player['name']] += 1
+            if not player['name'] == 'Computer':
+                score[player['name']] += 1
     else:
         winningSign = data[0]
         if player['sign'] != winningSign:
             switchPlayer()
-        score[player['name']] += 2
+        if not player['name'] == 'Computer':
+            score[player['name']] += 2
 
-    printScores()
+
+def humanMove(playerSign):
+    [x, y] = isValidMove()
+    board[x][y] = playerSign
+    switchPlayer()
 
 
-def vsComp():
-    reset(True)
-    global score
-    score = {
-        firstPlayerName: 0
-    }
+def restart():
+    # Optional restart after the game have finished
+    print('Type showScores to see the score board')
+    answer = str(
+        input('Would you like to restart(Y/N/showScores): ')).lower()
+    if answer == 'showscores':
+        printScores()
+        restart()
+    elif answer == 'y':
+        reset()
+    else:
+        print('Thank you for playing!')
+        return False
+
+
+def vsComp(isFirstTime=True):
+    if isFirstTime:
+        reset(True)
 
     while True:
         printBoard()
@@ -251,28 +305,15 @@ def vsComp():
                 print('Draw!')
                 updateScore('draw')
 
-            # Optional restart after the game have finished
-            answer = str(input('Would you like to restart(Y/N): ')).lower()
-            if answer == 'y':
-                reset()
-            else:
-                print('Thank you for playing!')
+            # Checking if the user wants to end the game or not
+            if not restart():
                 return
 
         print(player['name'] + '\'s turn as ' + player['sign'])
 
         # User's turn
         if player['sign'] == 'X':
-            while True:
-                move = str(
-                    input('Please enter the indexes for your move(x,y): ')).split(',')
-                [x, y] = [int(x) for x in move]
-                if isValidMove([x, y]):
-                    board[x][y] = 'X'
-                    switchPlayer()
-                    break
-                else:
-                    print('Not a valid move, enter the indexes again please: ')
+            humanMove('X')
 
         # Computer's turn
         else:
@@ -284,13 +325,9 @@ def vsComp():
             switchPlayer()
 
 
-def localPlay():
-    reset(True)
-    global score
-    score = {
-        firstPlayerName: 0,
-        secPlayerName: 0
-    }
+def localPlay(isFirstTime=True):
+    if isFirstTime:
+        reset(True)
 
     while True:
         printBoard()
@@ -307,31 +344,13 @@ def localPlay():
                 print('Draw!')
                 updateScore('draw')
 
-            # Optional restart after the game have finished
-            answer = str(input('Would you like to restart(Y/N): ')).lower()
-            if answer == 'y':
-                reset()
-            else:
-                print('Thank you for playing!')
+            # Checking if the user wants to end the game or not
+            if not restart():
                 return
 
         print(player['name'] + '\'s turn as ' + player['sign'])
 
-        while True:
-            try:
-                move = str(
-                    input('Please enter the indexes for your move(x,y): ')).split(',')
-                [x, y] = [int(x) for x in move]
-            except Exception:
-                move = str(
-                    input('Input is wrongly formatted, try again(x,y): ')).split(',')
-                [x, y] = [int(x) for x in move]
-            if isValidMove([x, y]):
-                board[x][y] = player['sign']
-                switchPlayer()
-                break
-            else:
-                print('Not a valid move, enter the indexes again please: ')
+        humanMove(player['sign'])
 
 
 gamePick()
