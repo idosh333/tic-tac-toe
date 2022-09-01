@@ -13,9 +13,12 @@ def gamePick():
     while True:
         # Validating the input
         gamePick = str(input('Please pick your game type: '))
-        if len(gamePick) > 1:
+
+        # These conditions are seperated to check first if the input not a number
+        # and only after that check if its withing the range of options
+        if not gamePick.isdigit():
             print('❌: Wrong input for gamePick, try again')
-        elif int(gamePick) > 2 or int(gamePick) < 1:
+        elif int(gamePick) > len(options) or int(gamePick) < 1:
             print('❌: Wrong input for gamePick, try again')
         else:
             break
@@ -48,7 +51,7 @@ def reset(isFirstTime=False):
     if isFirstTime:
         firstPlayerName = str(input('Please enter player1 name: '))
 
-        # gamePick 0 = 2 players local play => need a second players name
+        # gamePick 0 = [2 players local play] => need a second players name
         if gamePick == 0:
             secPlayerName = str(input('Please enter player2 name: '))
             score = {
@@ -68,8 +71,10 @@ def reset(isFirstTime=False):
              ['_', '_', '_'],
              ['_', '_', '_']]
 
-    coinFlipPick = input('Please enter a coin flip pick(0/1): ')
-    if coinFlipPick != str(random.randint(0, 1)):
+    coinFlipPick = str(input('Please enter a coin flip pick(0/1): '))
+    randomCoinFlip = str(random.randint(0, 1))
+    print(f"Flipped the coin: {randomCoinFlip}")
+    if coinFlipPick != randomCoinFlip:
         switchPlayer()
 
     if not isFirstTime:
@@ -117,7 +122,7 @@ def getWinner():
             if len(set(cross2)) == 1 and len(cross2) == 3:
                 return board[i][2 - i]
 
-    # Is board full?
+    # No win, board is not full and its checking this condition
     for row in range(0, 3):
         for col in range(0, 3):
             if (board[row][col] == '_'):
@@ -156,12 +161,14 @@ def isValidMove():
 
 
 '''
-    One of two functions, using recoursion in order to test every possibillity.
-    If the possibility is getting us to win it will return a value by this terms:
+    One of two functions,
+    this function will try to minimize the opponents score.
+    Using recoursion in order to test every board possibillity, the function check
+    if the possibility tree is making the opponent lose.
+    it will return a value by this terms:
      1: win
      0: draw
     -1: loss
-    This function will try to minimize the opponents score
 '''
 
 
@@ -171,15 +178,20 @@ def minCompMove():
     y = None
     result = getWinner()
 
+    # X wins = computer loss
     if result == 'X':
         return (-1, 0, 0)
+
+    # O wins = computer wins
     elif result == 'O':
         return (1, 0, 0)
+
+    # _ = draw
     elif result == '_':
         return (0, 0, 0)
 
-    for row in range(0, 3):
-        for col in range(0, 3):
+    for row in range(3):
+        for col in range(3):
             if board[row][col] == '_':
                 # Creating a possibility recourse tree
                 board[row][col] = 'X'
@@ -195,12 +207,14 @@ def minCompMove():
 
 
 '''
-    One of two functions, using recoursion in order to test every possibillity.
-    If the possibility is getting us to win it will return a value by this terms:
+    One of two functions,
+    This function will try to maximize the computers score.
+    Using recoursion in order to test every board possibillity, the function check
+    if the possibility tree is getting us to win with the least moves.
+    it will return a value by this terms:
      1: win
      0: draw
     -1: loss
-    This function will try to maximize computers score
 '''
 
 
@@ -217,8 +231,8 @@ def compMove():
     elif result == '_':
         return (0, 0, 0)
 
-    for row in range(0, 3):
-        for col in range(0, 3):
+    for row in range(3):
+        for col in range(3):
             if board[row][col] == '_':
                 # Creating a possibility recourse tree
                 board[row][col] = 'O'
@@ -232,6 +246,7 @@ def compMove():
     return [outcome, x, y]
 
 
+# Checks if the board is empty
 def isFirstMove():
     for row in range(0, 3):
         for col in range(0, 3):
@@ -247,8 +262,8 @@ def printScores():
         print(f"{index + 1}) {scoreTuple[1]}: {scoreTuple[0]}")
 
 
-def updateScore(data):
-    if data == 'draw':
+def updateScore(winnerSign):
+    if winnerSign == 'draw':
         if not player['name'] == 'Computer':
             score[player['name']] += 1
 
@@ -258,8 +273,9 @@ def updateScore(data):
             if not player['name'] == 'Computer':
                 score[player['name']] += 1
     else:
-        winningSign = data[0]
-        if player['sign'] != winningSign:
+
+        # A short condition to check if the winner is the currently active player.
+        if player['sign'] != winnerSign[0]:
             switchPlayer()
         if not player['name'] == 'Computer':
             score[player['name']] += 2
@@ -272,7 +288,7 @@ def humanMove(playerSign):
 
 
 def restart():
-    # Optional restart after the game have finished
+    # Optional restart after the game has finished
     print('Type showScores to see the score board')
     answer = str(
         input('Would you like to restart(Y/N/showScores): ')).lower()
