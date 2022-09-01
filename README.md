@@ -1,5 +1,10 @@
 <div id="top"></div>
 
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
 <br />
 <div align="center">
   <a href="https://github.com/idosh333/tic-tac-toe">
@@ -29,11 +34,9 @@
 A minimax algorithm is a recursive program written to find the best gameplay that minimizes any tendency
 to lose a game while maximizing any opportunity to win the game.
 
-
 ### Built With
 
 - Python
-
 
 <!-- GETTING STARTED -->
 
@@ -56,7 +59,6 @@ To get a local copy up and running follow these simple example steps.
    py main.py
    ```
 2. Enjoy playing :)
-
 
 <!-- CONTRIBUTING -->
 
