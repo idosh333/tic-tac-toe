@@ -3,6 +3,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/idosh333/tic-tac-toe">
+    <img src="images/logo.png" alt="Logo" width="500" height="500">
   </a>
 
 <h3 align="center">-Tic Tac Toe-</h3>
