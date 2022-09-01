@@ -3,7 +3,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/idosh333/tic-tac-toe">
-    <img src="images/logo.png" alt="Logo" width="500" height="500">
+    <img src="images/logo.png" alt="Logo" width="350" height="350">
   </a>
 
 <h3 align="center">-Tic Tac Toe-</h3>
@@ -50,7 +50,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Use
 
-1. Start the game using cmd or click on the game.bat file.
+1. Start the game using a terminal or click on the game.bat file.
    ```sh
    cd <gameFolder>
    py main.py
