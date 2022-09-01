@@ -46,7 +46,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-1. Clone the repo
+   Clone the repo
    ```sh
    git clone https://github.com/idosh333/tic-tac-toe.git
    ```
@@ -83,7 +83,7 @@ Don't forget to give the project a star! Thanks again!
 
 Ido Shayovitz - ido.sh333@gmail.com
 
-Project Link: [https://github.com/idosh333/tic-tac-toe](https://github.com/idosh333/tic-tac-toe)
+Project Link - [https://github.com/idosh333/tic-tac-toe](https://github.com/idosh333/tic-tac-toe)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
