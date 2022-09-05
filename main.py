@@ -173,7 +173,10 @@ def isValidMove():
 
 
 def minCompMove():
+
+    # Initialize the outcome of the move with the lowest possible value
     outcome = 2
+
     x = None
     y = None
     result = getWinner()
@@ -190,6 +193,7 @@ def minCompMove():
     elif result == '_':
         return (0, 0, 0)
 
+    # Find the best outcome for all unused cells
     for row in range(3):
         for col in range(3):
             if board[row][col] == '_':
@@ -219,7 +223,10 @@ def minCompMove():
 
 
 def compMove():
+
+    # Initialize the outcome of the move with the lowest possible value
     outcome = -2
+
     x = None
     y = None
     result = getWinner()
