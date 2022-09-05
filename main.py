@@ -85,11 +85,12 @@ def reset(isFirstTime=False):
 
 
 def printBoard():
-    print('    0    1    2')
+    print('    0    1    2   x')
     col = 0
     for row in range(3):
         print(f"{col} {board[row]}")
         col += 1
+    print('y')
 
 
 # Returns the winner sign if there's a winner, if not it will return None to continue playing
@@ -152,7 +153,7 @@ def isValidMove():
         if (
             x > 2 or x < 0 or
             y > 2 or y < 0 or
-            board[x][y] != '_'
+            board[y][x] != '_'
         ):
             print('❌: Not a valid move, enter the indexes again please: ')
             # return False
@@ -270,15 +271,20 @@ def printScores():
 
 
 def updateScore(winnerSign):
-    if winnerSign == 'draw':
-        if not player['name'] == 'Computer':
+    if winnerSign == 'D':
+
+        # Check if there are two local players
+        if len(score.keys()) > 1:
+            score[player['name']] += 1
+            switchPlayer()
             score[player['name']] += 1
 
-        # Check if theres only one player(happens when playing vs computer)
-        if len(score.keys()) > 1:
-            switchPlayer()
-            if not player['name'] == 'Computer':
-                score[player['name']] += 1
+        else:
+            # Check if currently active player is the computer
+            if player['name'] == 'Computer':
+                switchPlayer()
+            # Raise the score eventually
+            score[player['name']] += 1
     else:
 
         # A short condition to check if the winner is the currently active player.
@@ -290,7 +296,7 @@ def updateScore(winnerSign):
 
 def humanMove(playerSign):
     [x, y] = isValidMove()
-    board[x][y] = playerSign
+    board[y][x] = playerSign
     switchPlayer()
 
 
@@ -326,7 +332,7 @@ def vsComp(isFirstTime=True):
                 updateScore('O')
             elif winner == '_':
                 print('Draw!')
-                updateScore('draw')
+                updateScore('D')
 
             # Checking if the user wants to end the game or not
             if not restart():
@@ -365,7 +371,7 @@ def localPlay(isFirstTime=True):
                 updateScore('O')
             elif winner == '_':
                 print('Draw!')
-                updateScore('draw')
+                updateScore('D')
 
             # Checking if the user wants to end the game or not
             if not restart():
